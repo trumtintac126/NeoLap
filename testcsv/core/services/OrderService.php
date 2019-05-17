@@ -45,6 +45,11 @@ class OrderService implements ServiceInterface
         return $this->repository->listYearOrder();
     }
 
+    public function topBySell($year,$month)
+    {
+        return $this->repository->topBySell($year,$month);
+    }
+
     public function update($id, $data)
     {
         // TODO: Implement update() method.

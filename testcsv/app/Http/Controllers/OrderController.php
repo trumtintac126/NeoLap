@@ -122,6 +122,10 @@ class OrderController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function revenueByMonth(Request $request)
     {
         try {
@@ -147,6 +151,9 @@ class OrderController extends Controller
             ], $code);
     }
 
+    /**
+     * @return array|null
+     */
     public function getListYearOrder()
     {
         try {
@@ -164,6 +171,32 @@ class OrderController extends Controller
             $data = null;
         }
         return $data;
+    }
+
+    public function topBySell(Request $request)
+    {
+        try {
+            
+            $topBySell = $this->orderService->topBySell($request->year, $request->month);
+
+            dd($topBySell);
+            
+            $message = "Success";
+            $code = 200;
+            $data = $topBySell;
+            
+        } catch (\Exception $e) {
+            dd($e);
+            $message = $e->getMessage();
+            $code = 400;
+            $data = null;
+        }
+        return response()
+            ->json([
+                "result_code" => $code,
+                "result_message" => $message,
+                "data" => $data
+            ], $code);
     }
 
 }

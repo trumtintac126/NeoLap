@@ -57,6 +57,21 @@ class OrderRepository implements RepositoryInterface
         return $data;
     }
 
+    public function topBySell($year,$month)
+    {
+        $data = DB::table('order_customers')
+            ->select(DB::raw('SUM(quantity) as sum_quantity'),
+                'category_order'
+            )
+            ->groupBy('category_order')
+            ->orderByDesc('sum_quantity')
+            ->whereMonth('order_date', '=', $month)
+            ->whereYear('order_date', '=', $year)
+            ->limit(3)
+            ->get();
+        return $data;
+    }
+
     public function find($id)
     {
         // TODO: Implement find() method.
