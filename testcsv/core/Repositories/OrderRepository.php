@@ -10,6 +10,7 @@ namespace Core\Repositories;
 
 
 use App\Order;
+use Illuminate\Support\Facades\DB;
 
 class OrderRepository implements RepositoryInterface
 {
@@ -25,13 +26,35 @@ class OrderRepository implements RepositoryInterface
     {
         $result = [
             'order_date' => $data['order_date'],
-            'category_order'=> $data['category_order'],
+            'category_order' => $data['category_order'],
             'price' => $data['price'],
             'quantity' => $data['quantity'],
             'total_detail' => $data['total_detail']
         ];
 
         return $this->model->create($result);
+    }
+
+    public function revenueByMonth($year)
+    {
+        $data = DB::table('order_customers')
+            ->select(DB::raw('SUM(total_detail) as total_order_by_month'),
+                DB::raw('extract(month from order_date) as month_order_by_year'))
+            ->groupBy('month_order_by_year')
+            ->whereYear('order_date', '=', $year)
+            ->get();
+        return $data;
+    }
+
+    public function listYearOrder()
+    {
+        $data = DB::table('order_customers')
+            ->select(
+                DB::raw('extract(year from order_date) as order_year')
+            )
+            ->groupBy('order_year')
+            ->get();
+        return $data;
     }
 
     public function find($id)
@@ -53,5 +76,5 @@ class OrderRepository implements RepositoryInterface
     {
         // TODO: Implement destroy() method.
     }
-    
+
 }

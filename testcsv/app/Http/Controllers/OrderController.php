@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Core\Services\OrderService;
 use Illuminate\Http\Request;
+use Mockery\CountValidator\Exception;
 
 class OrderController extends Controller
 {
@@ -55,7 +56,10 @@ class OrderController extends Controller
                     while (($filedata = fgetcsv($file, 1000, ",")) !== FALSE) {
                         $num = count($filedata);
 
-                        if($row == 1){ $row++; continue; }
+                        if ($row == 1) {
+                            $row++;
+                            continue;
+                        }
 
                         for ($c = 0; $c < $num; $c++) {
 
@@ -116,6 +120,50 @@ class OrderController extends Controller
 
         return true;
 
+    }
+
+    public function revenueByMonth(Request $request)
+    {
+        try {
+
+            $revenue_month_by_year = $this->orderService->revenueByMonth($request->year);
+            $message = "Success";
+            $code = 200;
+            $data = [
+                "revenue_month" => $revenue_month_by_year,
+                "year_order" => $this->getListYearOrder()
+            ];
+
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $code = 400;
+            $data = null;
+        }
+        return response()
+            ->json([
+                "result_code" => $code,
+                "result_message" => $message,
+                "data" => $data
+            ], $code);
+    }
+
+    public function getListYearOrder()
+    {
+        try {
+            $data_year_order = $this->orderService->listYearOrder();
+
+            $year = [];
+
+            foreach ($data_year_order as $data) {
+                array_push($year, $data->order_year);
+            }
+
+            $data = $year;
+
+        } catch (\Exception $e) {
+            $data = null;
+        }
+        return $data;
     }
 
 }

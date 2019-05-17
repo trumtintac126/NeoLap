@@ -32,7 +32,17 @@ class OrderService implements ServiceInterface
 
     public function store($data)
     {
-        $this->repository->store($data);
+        return $this->repository->store($data);
+    }
+
+    public function revenueByMonth($year)
+    {
+        return $this->repository->revenueByMonth($year);
+    }
+
+    public function listYearOrder()
+    {
+        return $this->repository->listYearOrder();
     }
 
     public function update($id, $data)
