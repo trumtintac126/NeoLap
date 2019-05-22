@@ -38,10 +38,10 @@ class MessagePosted implements ShouldBroadcastNow
         return new Channel('channel');
     }
 
-    public function broadcastWith()
-    {
-        return [
-          'order' => $this->order
-        ];
-    }
+//    public function broadcastWith()
+//    {
+//        return [
+//          'order' => $this->order
+//        ];
+//    }
 }

@@ -22,11 +22,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="OrderController.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OrderController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/OrderController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-137">
-              <caret line="213" column="20" selection-start-line="213" selection-start-column="20" selection-end-line="213" selection-end-column="20" />
+            <state relative-caret-position="508">
+              <caret line="256" column="39" selection-start-line="256" selection-start-column="39" selection-end-line="256" selection-end-column="39" />
               <folding>
                 <element signature="e#41#70#0#PHP" expanded="true" />
               </folding>
@@ -74,14 +74,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MessagePosted.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MessagePosted.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Events/MessagePosted.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
-              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-              <folding>
-                <element signature="e#30#44#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="150">
+              <caret line="10" column="46" selection-start-line="10" selection-start-column="46" selection-end-line="10" selection-end-column="46" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -129,12 +127,12 @@
         <option value="$PROJECT_DIR$/routes/api.php" />
         <option value="$PROJECT_DIR$/config/app.php" />
         <option value="$PROJECT_DIR$/laravel-echo-server.json" />
-        <option value="$PROJECT_DIR$/app/Events/MessagePosted.php" />
         <option value="$PROJECT_DIR$/resources/js/bootstrap.js" />
         <option value="$PROJECT_DIR$/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php" />
         <option value="$PROJECT_DIR$/.env" />
         <option value="$PROJECT_DIR$/config/broadcasting.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/OrderController.php" />
+        <option value="$PROJECT_DIR$/app/Events/MessagePosted.php" />
       </list>
     </option>
   </component>
@@ -459,16 +457,16 @@
       <workItem from="1558074307503" duration="11352000" />
       <workItem from="1558315672652" duration="24000" />
       <workItem from="1558406413608" duration="1557000" />
-      <workItem from="1558488772994" duration="24568000" />
+      <workItem from="1558488772994" duration="24949000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="53714000" />
+    <option name="totallyTimeSpent" value="54095000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="45" y="25" width="1875" height="1055" extended-state="7" />
-    <editor active="true" />
+    <frame x="45" y="25" width="1875" height="1055" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -866,23 +864,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Events/MessagePosted.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/OrderController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+        <state relative-caret-position="508">
+          <caret line="256" column="39" selection-start-line="256" selection-start-column="39" selection-end-line="256" selection-end-column="39" />
           <folding>
-            <element signature="e#30#44#0#PHP" expanded="true" />
+            <element signature="e#41#70#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/OrderController.php">
+    <entry file="file://$PROJECT_DIR$/app/Events/MessagePosted.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-137">
-          <caret line="213" column="20" selection-start-line="213" selection-start-column="20" selection-end-line="213" selection-end-column="20" />
-          <folding>
-            <element signature="e#41#70#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="150">
+          <caret line="10" column="46" selection-start-line="10" selection-start-column="46" selection-end-line="10" selection-end-column="46" />
+          <folding />
         </state>
       </provider>
     </entry>
