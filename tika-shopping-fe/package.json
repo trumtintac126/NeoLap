@@ -1,0 +1,45 @@
+{
+  "name": "tika-shopping-fe",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then npm run build ; fi ",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "@fortawesome/vue-fontawesome": "^0.1.5",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.13",
+    "chart.js": "^2.8.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "express": "^4.16.4",
+    "jquery": "^3.3.1",
+    "laravel-echo": "^1.5.3",
+    "popper.js": "^1.14.7",
+    "serve-static": "^1.13.2",
+    "socket.io-client": "^2.2.0",
+    "vee-validate": "^2.1.7",
+    "vue": "^2.5.22",
+    "vue-chartjs": "^3.4.2",
+    "vue-color": "^2.7.0",
+    "vue-resource": "^1.5.1",
+    "vue-router": "^3.0.1",
+    "vue-socket.io": "^3.0.7",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.4.0",
+    "@vue/cli-plugin-eslint": "^3.4.0",
+    "@vue/cli-service": "^3.4.0",
+    "@vue/eslint-config-prettier": "^4.0.1",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "vue-template-compiler": "^2.5.21"
+  }
+}

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\MessagePosted;
 use Core\Services\OrderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Mockery\CountValidator\Exception;
 
 class OrderController extends Controller
@@ -119,7 +121,6 @@ class OrderController extends Controller
         }
 
         return true;
-
     }
 
     /**
@@ -176,15 +177,89 @@ class OrderController extends Controller
     public function topBySell(Request $request)
     {
         try {
-            
+
             $topBySell = $this->orderService->topBySell($request->year, $request->month);
 
-            dd($topBySell);
-            
             $message = "Success";
             $code = 200;
             $data = $topBySell;
-            
+
+        } catch (\Exception $e) {
+            dd($e);
+            $message = $e->getMessage();
+            $code = 400;
+            $data = null;
+        }
+        return response()
+            ->json([
+                "result_code" => $code,
+                "result_message" => $message,
+                "data" => $data
+            ], $code);
+    }
+
+    public function getAll()
+    {
+        try {
+//            $data_order =  Redis::$this->orderService->paginate();
+//
+//            $count = Redis::count($this->orderService->getAll()) / 15;
+
+            $data_order =  $this->orderService->paginate();
+
+            $count = count($this->orderService->getAll()) / 15;
+
+            if ($count <= 1) {
+                $total = 1;
+            } else {
+                $total = ceil($count);
+            }
+
+            $message = "Success";
+            $code = 200;
+            $data = [
+                'data_orders' => $data_order,
+                'total_pages' => $total
+            ];
+
+        } catch (\Exception $e) {
+            dd($e);
+            $message = $e->getMessage();
+            $code = 400;
+            $data = null;
+        }
+        return response()
+            ->json([
+                "result_code" => $code,
+                "result_message" => $message,
+                "data" => $data
+            ], $code)
+            ->withHeaders([
+                'Access-Control-Allow-Credentials' => 'true',
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Headers' => 'Origin'
+            ]);
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $data_order = [
+                "order_date" => date("Y-m-d"),
+                "category_order" => $request->category_order,
+                "price" => $request->price,
+                "quantity" => $request->quantity,
+                "total_detail" => $request->total_detail,
+            ];
+
+            $order = $this->orderService->store($data_order);
+
+            $data = broadcast(new MessagePosted($order));
+
+            $code = 200;
+            $message = "Success";
+            $data = "Create order success";
+
         } catch (\Exception $e) {
             dd($e);
             $message = $e->getMessage();

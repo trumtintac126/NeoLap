@@ -22,7 +22,12 @@ class OrderService implements ServiceInterface
 
     public function paginate()
     {
-        // TODO: Implement paginate() method.
+        return $this->repository->paginate();
+    }
+
+    public function getAll()
+    {
+        return $this->repository->getAll();
     }
 
     public function find($id)
@@ -45,9 +50,9 @@ class OrderService implements ServiceInterface
         return $this->repository->listYearOrder();
     }
 
-    public function topBySell($year,$month)
+    public function topBySell($year, $month)
     {
-        return $this->repository->topBySell($year,$month);
+        return $this->repository->topBySell($year, $month);
     }
 
     public function update($id, $data)

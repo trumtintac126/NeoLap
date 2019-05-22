@@ -57,7 +57,7 @@ class OrderRepository implements RepositoryInterface
         return $data;
     }
 
-    public function topBySell($year,$month)
+    public function topBySell($year, $month)
     {
         $data = DB::table('order_customers')
             ->select(DB::raw('SUM(quantity) as sum_quantity'),
@@ -79,7 +79,15 @@ class OrderRepository implements RepositoryInterface
 
     public function paginate()
     {
-        // TODO: Implement paginate() method.
+        $data = DB::table('order_customers')
+            ->select('id', 'order_date', 'category_order', 'price', 'quantity', 'total_detail')
+            ->orderByDesc('id');
+        return $data->simplePaginate(15);
+    }
+
+    public function getAll()
+    {
+        return $this->model->all()->toArray();
     }
 
     public function update($id, $data)
