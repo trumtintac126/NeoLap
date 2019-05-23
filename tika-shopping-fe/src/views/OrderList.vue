@@ -67,6 +67,12 @@ export default {
   },
   created() {
     this.fetch();
+
+    Echo.channel('laravel_database_channel')
+        .listen('MessagePosted', ({ order }) => {
+            this.fetch();
+        });
+
     // this.timer = setInterval(this.fetch,3000)
   },
   methods: {

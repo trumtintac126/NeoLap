@@ -37,8 +37,8 @@ Vue.http.options.root = 'http://127.0.0.1:8000/api/';
 window.io = require('socket.io-client');
 
 window.Echo = new Echo({
-    broadcaster: 'socket.io',
-    host: window.location.hostname + ':6001'
+  broadcaster: 'socket.io',
+  host: window.location.hostname + ':6001'
 });
 //
 
