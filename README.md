@@ -10,3 +10,8 @@ config/app.js php artisan make:event MessagePosted
 
 in vue js 
 npm i laravel-echo socket.io-client -s
+
+
+**mamagement_log
+install laravel/validation : composer require prettus/laravel-validation:1.1.*
+
