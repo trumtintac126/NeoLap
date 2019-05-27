@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use App\Repositories\RepositoryInterface;
 use App\Repositories\UserRepository;
-use App\Services\ServiceInterface;
 use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,11 +25,9 @@ class CoreServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            RepositoryInterface::class,
             UserRepository::class
         );
         $this->app->bind(
-            ServiceInterface::class,
             UserService::class
         );
     }

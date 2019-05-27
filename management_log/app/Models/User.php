@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Created by PhpStorm.
+ * User: trinm
+ * Date: 27/05/2019
+ * Time: 09:54
+ */
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
