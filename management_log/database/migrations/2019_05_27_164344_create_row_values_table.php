@@ -17,7 +17,7 @@ class CreateRowValuesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('row_id');
             $table->text('value');
-            $table->integer('hash');
+            $table->string('hash');
             $table->timestamps();
         });
         Schema::table('row_values', function ($table) {
