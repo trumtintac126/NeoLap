@@ -1,19 +1,22 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: trinm
+ * Date: 28/05/2019
+ * Time: 08:50
+ */
 
 namespace App\Repositories\Eloquent;
 
+
+use App\Models\Table_name;
+use App\Repositories\Contracts\TablenameRepository;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Contracts\UserRepository;
-use App\Models\User;
 
-/**
- * Class UserRepositoryEloquent.
- *
- * @package namespace App\Repositories\Eloquent;
- */
-class UserRepositoryEloquent extends BaseRepository implements UserRepository
+class TablenameRepositoryEloquent extends BaseRepository implements TablenameRepository
 {
+
     /**
      * Specify Model class name
      *
@@ -21,7 +24,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
      */
     public function model()
     {
-        return User::class;
+        return Table_name::class;
     }
 
     /**
@@ -31,6 +34,5 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-
-//    public function abc() {}
+    
 }

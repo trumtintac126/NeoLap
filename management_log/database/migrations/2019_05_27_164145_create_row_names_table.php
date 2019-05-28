@@ -20,6 +20,7 @@ class CreateRowNamesTable extends Migration
             $table->unsignedBigInteger('table_name_id');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('row_names', function ($table) {
             $table->foreign('table_name_id')->references('id')->on('table_names');

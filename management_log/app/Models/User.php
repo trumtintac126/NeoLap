@@ -16,7 +16,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User  extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
     protected $table = "customer_users";
     public $timestamps = false;
     use Notifiable,SoftDeletes;
@@ -35,8 +34,8 @@ class User  extends Authenticatable implements JWTSubject
         'avatar_img',
         'remember_token',
         'created_at',
-        'update_at',
-        'delete_at'
+        'updated_at',
+        'deleted_at'
     ];
 
     /**

@@ -52,13 +52,6 @@ class UserController extends ApiController
     {
         try {
             DB::beginTransaction();
-
-            $remember_token = [
-                'email' => $request->email,
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-            ];
-
             $data_user = [
                 "email" => $request->email,
                 "password" => bcrypt($request->password),
@@ -94,7 +87,7 @@ class UserController extends ApiController
                 "first_name" => $request->first_name ? $request->first_name : $data_user['first_name'],
                 "last_name" => $request->last_name ? $request->last_name : $data_user['last_name'],
             ];
-
+            
             $data_user = $this->userService->update($id, $data_update);
 
             return $this->success('Update success!');

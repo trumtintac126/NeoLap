@@ -15,4 +15,5 @@ interface ServiceInterface
     public function all(array $options = []);
 
     public function paginate(array $options = []);
+    
 }

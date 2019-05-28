@@ -42,7 +42,7 @@ abstract class AbstractService implements ServiceInterface
      */
     public function create(array $attributes)
     {
-        if (! is_null($this->createValidator)) {
+        if (!is_null($this->createValidator)) {
             $this->createValidator->with($attributes)->passesOrFail();
         }
 
@@ -58,7 +58,7 @@ abstract class AbstractService implements ServiceInterface
      */
     public function update($id, array $attributes)
     {
-        if (! is_null($this->updateValidator)) {
+        if (!is_null($this->updateValidator)) {
             $this->updateValidator->with($attributes)->passesOrFail();
         }
 
@@ -82,9 +82,8 @@ abstract class AbstractService implements ServiceInterface
      */
     public function all(array $options = [])
     {
-//        return $this->repository->all($columns = ['*']);
         return $this->repository->scopeQuery(function ($query) {
-            return $query->orderBy('id','desc');
+            return $query->orderBy('id', 'desc');
         })->all();
     }
 
@@ -94,7 +93,13 @@ abstract class AbstractService implements ServiceInterface
      */
     public function paginate(array $options = [])
     {
-        // TODO: Implement paginate() method.
+        $limit = $options['limit'] ?? 10;
+       return $this->repository->paginate($limit ,$options);
+    }
+
+    public function findWhere(array $where, array $attributes)
+    {
+        return $this->repository->findWhere($where, $attributes);
     }
 
 }
