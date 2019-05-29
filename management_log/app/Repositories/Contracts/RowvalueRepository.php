@@ -13,5 +13,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 
 interface RowvalueRepository extends RepositoryInterface
 {
-
+    
 }

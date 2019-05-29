@@ -16,12 +16,14 @@ use App\Repositories\Validators\Row_value\UpdateRowvalueValidator;
 
 class RowvalueService extends AbstractService
 {
-    public function __construct(RowvalueRepository $rowvalueRepository,
-                                CreateRowvalueValidator $createRowvalueValidator,
-                                UpdateRowvalueValidator $updateRowvalueValidator)
+    public function __construct(
+        RowvalueRepository $rowvalueRepository,
+        CreateRowvalueValidator $createRowvalueValidator,
+        UpdateRowvalueValidator $updateRowvalueValidator
+    )
     {
-        $this->rowvalueRepository = $rowvalueRepository;
-        $this->createRowvalueValidator = $createRowvalueValidator;
-        $this->updateRowvalueValidator = $updateRowvalueValidator;
+        $this->repository = $rowvalueRepository;
+        $this->createValidator = $createRowvalueValidator;
+        $this->updateValidator = $updateRowvalueValidator;
     }
 }

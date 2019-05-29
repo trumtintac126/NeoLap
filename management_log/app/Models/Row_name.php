@@ -28,4 +28,21 @@ class Row_name extends Model
     protected $hidden = [
     ];
 
+    /**
+     * row_name belongsTo table_name
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function table_name()
+    {
+        return $this->belongsTo('App\Models\Row_name', 'table_name_id', 'id');
+    }
+
+    /**
+     * row_name hasMany row_value
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function row_value()
+    {
+        return $this->hasMany('App\Models\Row_value', 'row_id', 'id');
+    }
 }

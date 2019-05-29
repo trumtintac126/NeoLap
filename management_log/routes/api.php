@@ -52,7 +52,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 });
 /****************************************************
  ***************** Router: Row_value ****************
- *****************************************************/
+ *****************************************************/ 
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('/row_values', 'Api\RowvalueController@create');
+    Route::delete('/row_values/{id}', 'Api\RowvalueController@delete');
+    Route::get('/row_values', 'Api\RowvalueController@all');
 });

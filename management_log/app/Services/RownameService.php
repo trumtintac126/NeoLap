@@ -22,7 +22,7 @@ class RownameService extends AbstractService
     )
     {
         $this->repository = $repository;
-        $this->createRownameValidator = $createRownameValidator;
-        $this->updateRownameValidator = $updateRownameValidator;
+        $this->createValidator = $createRownameValidator;
+        $this->updateValidator = $updateRownameValidator;
     }
 }

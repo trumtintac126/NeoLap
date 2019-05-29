@@ -24,4 +24,13 @@ class Row_value extends Model
     ];
     protected $hidden = [
     ];
+
+    /**
+     * row_value belongsTo row_name
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function row_name()
+    {
+        return $this->belongsTo('App\Models\Row_value', 'row_id', 'id');
+    }
 }

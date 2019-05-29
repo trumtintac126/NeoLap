@@ -43,7 +43,7 @@ class RownameController extends ApiController
                         'row_name' => $row['row_name'],
                         'type' => $row['type'],
                         'status' => \Constant::DB_FLG_STATUS_ON,
-                        'table_name_id' => $request->table_id,
+                        'table_name_id' => $request->table_name_id,
                         'created_at' => date('Y-m-d H:i:s'),
                     ];
                     $data_row = $this->rownameService->create($data_row_name);
@@ -152,11 +152,22 @@ class RownameController extends ApiController
     {
         try {
             $data = $this->rownameService->findWhere(
-                ['table_id' => $table_name_id],
+                ['table_name_id' => $table_name_id],
                 ['row_name', 'id']
             );
-    
+
             return $this->success($data);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage());
+        }
+    }
+
+    public function findId($condition)
+    {
+        try {
+            $id = $this->rownameService->findWhere(['row_name' => $condition], ['id'])->first()->id;
+            return $id;
+
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }

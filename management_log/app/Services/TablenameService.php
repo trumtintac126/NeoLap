@@ -22,8 +22,8 @@ class TablenameService extends AbstractService
     )
     {
         $this->repository = $repository;
-        $this->createTablenameValidator = $createTablenameValidator;
-        $this->updateTablenameValidator = $updateTablenameValidator;
+        $this->createValidator = $createTablenameValidator;
+        $this->updateValidator = $updateTablenameValidator;
     }
 
 }

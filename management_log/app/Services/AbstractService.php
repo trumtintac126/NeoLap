@@ -94,12 +94,16 @@ abstract class AbstractService implements ServiceInterface
     public function paginate(array $options = [])
     {
         $limit = $options['limit'] ?? 10;
-       return $this->repository->paginate($limit ,$options);
+        return $this->repository->paginate($limit, $options);
     }
 
+    /**
+     * @param array $where
+     * @param array $attributes
+     * @return mixed
+     */
     public function findWhere(array $where, array $attributes)
     {
         return $this->repository->findWhere($where, $attributes);
     }
-
 }
