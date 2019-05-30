@@ -102,7 +102,6 @@ class RowvalueController extends ApiController
     {
         try {
             $table_id = $request->table_id;
-
             $this->checkTableId($table_id);
             $data_header = $this->getHeader($table_id);
             $data_body = $this->getBody($table_id);
@@ -129,6 +128,13 @@ class RowvalueController extends ApiController
         }
     }
 
+
+
+    /**
+     * check table_id of user before list all row value
+     * @param $table_id
+     * @return bool|void
+     */
     public function checkTableId($table_id)
     {
         $data_user = auth()->user();

@@ -131,14 +131,12 @@ class RownameController extends ApiController
     {
         try {
 
-
             $data_row_name = $this->findWhere($table_name_id, $id);
 
             if ($data_row_name == null) {
                 return $this->error("Access deny");
             }
-            if(!$this->checkBeforeDelete($id))
-            {
+            if (!$this->checkBeforeDelete($id)) {
                 return $this->error("Relationshops with table row values");
             }
             $data_update = [
@@ -157,9 +155,9 @@ class RownameController extends ApiController
 
     public function checkBeforeDelete($row_id)
     {
-        $data_row = $this->rowvalueService->findWhere(['row_id' => $row_id],['*']);
+        $data_row = $this->rowvalueService->findWhere(['row_id' => $row_id], ['*']);
 
-        if(count($data_row) !== 0) {
+        if (count($data_row) !== 0) {
             return false;
         }
     }
