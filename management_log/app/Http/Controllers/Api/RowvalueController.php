@@ -41,13 +41,17 @@ class RowvalueController extends ApiController
     {
         try {
             DB::beginTransaction();
-            $data_user = auth()->user();
-            $hash = (string)Uuid::generate();
+            $table_id = $this->tablenameController->checkTableId($request->table_name_id);
 
-            $id_ip = $this->controller->findIdCreat("ip");
-            $id_method = $this->controller->findIdCreat("method");
-            $id_body = $this->controller->findIdCreat("body");
-            $id_header = $this->controller->findIdCreat("header");
+            if(!$table_id) {
+                return $this->error("Access deny");
+            }
+
+            $hash = (string)Uuid::generate();
+            $id_ip = $this->controller->findId("ip", $request->table_name_id);
+            $id_method = $this->controller->findId("method",$request->table_name_id);
+            $id_body = $this->controller->findId("body", $request->table_name_id);
+            $id_header = $this->controller->findId("header", $request->table_name_id);
 
             $hash = $request->hash;
             $ip = $request->ip;
@@ -102,7 +106,12 @@ class RowvalueController extends ApiController
     {
         try {
             $table_id = $request->table_id;
-            $this->tablenameController->checkTableId($table_id);
+
+            $table_id_check = $this->tablenameController->checkTableId($table_id);
+
+            if(!$table_id_check) {
+                return $this->error("Access deny");
+            }
             $data_header = $this->getHeader($table_id);
             $data_body = $this->getBody($table_id);
             $data_method = $this->getMethod($table_id);
@@ -127,31 +136,6 @@ class RowvalueController extends ApiController
             return $this->error($e->getMessage());
         }
     }
-
-//    /**
-//     * check table_id of user before list all row value
-//     * @param $table_id
-//     * @return bool|void
-//     */
-//    public function checkTableId($table_id)
-//    {
-//        $data_user = auth()->user();
-//        $table_id_check = $this->tablenameService->findWhere(
-//            ['user_id' => $data_user->id],
-//            ['id']
-//        );
-//        $arr_table_id = [];
-//
-//        foreach ($table_id_check as $item) {
-//            array_push($arr_table_id, $item->id);
-//        }
-//
-//        if (in_array($table_id, $arr_table_id)) {
-//            return true;
-//        } else {
-//            return;
-//        }
-//    }
 
     public function getHeader($table_id)
     {

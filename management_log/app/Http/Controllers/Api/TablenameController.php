@@ -171,11 +171,7 @@ class TablenameController extends ApiController
      */
     public function checkTableId($table_id)
     {
-        $data_user = auth()->user();
-        $table_id_check = $this->tablenameService->findWhere(
-            ['user_id' => $data_user->id],
-            ['id']
-        );
+        $table_id_check = $this->getTableId();
         $arr_table_id = [];
 
         foreach ($table_id_check as $item) {
@@ -187,6 +183,16 @@ class TablenameController extends ApiController
         } else {
             return false;
         }
+    }
+
+    public function getTableId()
+    {
+        $data_user = auth()->user();
+        $table_id_check = $this->tablenameService->findWhere(
+            ['user_id' => $data_user->id],
+            ['id']
+        );
+        return $table_id_check;
     }
 
 }
