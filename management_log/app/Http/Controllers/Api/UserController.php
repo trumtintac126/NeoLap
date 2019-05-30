@@ -9,27 +9,35 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Repositories\Validators\Auth_token\CreateAuthTokenValidator;
+use App\Repositories\Validators\Auth_token\UpdateAuthTokenValidator;
 use App\Repositories\Validators\User\CreateUserValidator;
 use App\Repositories\Validators\User\UpdateUserValidator;
+use App\Services\AuthTokenService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Webpatser\Uuid\Uuid;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-//use JWTAuth;
 
 class UserController extends ApiController
 {
     public function __construct(UserService $userService,
                                 CreateUserValidator $createUserValidator,
-                                UpdateUserValidator $updateUserValidator)
+                                UpdateUserValidator $updateUserValidator,
+                                AuthTokenService $authTokenService,
+                                CreateAuthTokenValidator $createAuthTokenValidator,
+                                UpdateAuthTokenValidator $updateAuthTokenValidator
+    )
     {
         $this->userService = $userService;
         $this->createUserValidator = $createUserValidator;
         $this->updateUserValidator = $updateUserValidator;
+        $this->authTokenService = $authTokenService;
+        $this->createAuthTokenValidator = $createAuthTokenValidator;
+        $this->updateAuthTokenValidator = $updateAuthTokenValidator;
     }
 
     /**
@@ -81,7 +89,7 @@ class UserController extends ApiController
     {
         try {
             DB::beginTransaction();
-            $data_user = [
+            $data_user_register = [
                 "email" => $request->email,
                 "password" => bcrypt($request->password),
                 "first_name" => $request->first_name,
@@ -91,9 +99,20 @@ class UserController extends ApiController
                 'created_at' => date('Y-m-d H:i:s'),
 
             ];
-            $user = $this->userService->create($data_user);
+            $user = $this->userService->create($data_user_register);
             $token = JWTAuth::fromUser($user);
 
+            $data_user = $this->userService->all()->first();
+
+            $data_auth_token = [
+                'user_id' => $data_user->id,
+                'token' => $token,
+                'status' => \Constant::DB_FLG_STATUS_ON,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            $auth_token = $this->authTokenService->create($data_auth_token);
+            $token = JWTAuth::fromUser($auth_token);
             DB::commit();
             return $this->success($token);
 

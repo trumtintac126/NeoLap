@@ -16,10 +16,10 @@ class CreateAuthTokensTable extends Migration
         Schema::create('auth_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->string('token');
+            $table->text('token');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
-            $table->dateTime('deleted_at');
+            $table->dateTime('deleted_at')->nullable();
         });
         Schema::table('auth_tokens', function ($table) {
             $table->foreign('user_id')->references('id')->on('customer_users');

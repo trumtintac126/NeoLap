@@ -37,8 +37,10 @@ class RownameController extends ApiController
     {
         try {
             DB::beginTransaction();
-            $data_user = auth()->user();
-
+            $table_id = $this->controller->checkTableId($request->table_name_id);
+            if(!$table_id) {
+                return $this->error("Access deny");
+            }
             $row_name = $request->data_row_name;
             if (isset($row_name)) {
                 foreach ($row_name as $row) {
@@ -65,6 +67,7 @@ class RownameController extends ApiController
             return $this->error($e->getMessage());
         }
     }
+
 
     public function update(Request $request, $table_name_id, $id)
     {
