@@ -13,6 +13,7 @@ use App\Repositories\Validators\Row_name\CreateRownameValidator;
 use App\Repositories\Validators\Row_name\UpdateRownameValidator;
 use App\Services\RownameService;
 
+use App\Services\RowvalueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -22,12 +23,14 @@ class RownameController extends ApiController
     public function __construct(RownameService $rownameService,
                                 CreateRownameValidator $createRownameValidator,
                                 UpdateRownameValidator $updateRownameValidator,
-                                TablenameController $controller)
+                                TablenameController $controller,
+                                RowvalueService $rowvalueService)
     {
         $this->rownameService = $rownameService;
         $this->createRownameValidator = $createRownameValidator;
         $this->updateRownameValidator = $updateRownameValidator;
         $this->controller = $controller;
+        $this->rowvalueService = $rowvalueService;
     }
 
     public function create(Request $request)
@@ -128,12 +131,16 @@ class RownameController extends ApiController
     {
         try {
 
+
             $data_row_name = $this->findWhere($table_name_id, $id);
 
             if ($data_row_name == null) {
                 return $this->error("Access deny");
             }
-
+            if(!$this->checkBeforeDelete($id))
+            {
+                return $this->error("Relationshops with table row values");
+            }
             $data_update = [
                 'status' => 0,
                 'deleted_at' => date('Y-m-d H:i:s'),
@@ -145,6 +152,15 @@ class RownameController extends ApiController
 
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
+        }
+    }
+
+    public function checkBeforeDelete($row_id)
+    {
+        $data_row = $this->rowvalueService->findWhere(['row_id' => $row_id],['*']);
+
+        if(count($data_row) !== 0) {
+            return false;
         }
     }
 
