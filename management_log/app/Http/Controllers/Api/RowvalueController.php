@@ -50,7 +50,7 @@ class RowvalueController extends ApiController
 
             $hash = $request->hash;
             $ip = $request->ip;
-            $method = $request->method;
+            $method = $request->methods;
             $body = $request->body;
             $header = $request->header;
 
@@ -100,33 +100,25 @@ class RowvalueController extends ApiController
     public function all()
     {
         try {
-            $this->getHeader();
-            $data_name = $this->getRowName(1);
-            $row_id = [];
-            $row_name = [];
-            foreach ($data_name as $data) {
-                array_push($row_id, $data->id);
-                array_push($row_name, $data->row_name);
-            }
-
             $data_header = $this->getHeader();
             $data_body = $this->getBody();
             $data_method = $this->getMethod();
             $data_ip = $this->getIp();
 
-            foreach ($row_name as $item)
-            {
-                print $item;
+            $array_data = [];
+
+            for ($i = 0; $i < count($data_header); $i++) {
+                $data = [
+                    "hearder" => $data_header[$i],
+                    "body" => $data_body[$i],
+                    "method" => $data_method[$i],
+                    "ip" => $data_ip[$i]
+                ];
+
+                array_push($array_data, $data);
             }
 
-            $value = $this->getValue($row_id);
-
-            $data = [
-                "row_name" => $row_name,
-                "value" => $value
-            ];
-
-            return $this->success($data);
+            return $this->success($array_data);
 
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
@@ -135,68 +127,47 @@ class RowvalueController extends ApiController
 
     public function getHeader()
     {
+        $arr_header = [];
         $id_header = $this->controller->findId("header");
         $data_header = $this->rowvalueService->findWhere(['row_id' => $id_header], ['value']);
-        return $data_header;
+        foreach ($data_header as $item) {
+            array_push($arr_header, $item->value);
+        }
+        return $arr_header;
     }
 
     public function getBody()
     {
+        $arr_body = [];
         $id_body = $this->controller->findId("body");
         $data_body = $this->rowvalueService->findWhere(['row_id' => $id_body], ['value']);
-        return $data_body;
+        foreach ($data_body as $item) {
+            array_push($arr_body, $item->value);
+        }
+        return $arr_body;
     }
 
     public function getMethod()
     {
+        $arr_method = [];
         $id_method = $this->controller->findId("method");
         $data_method = $this->rowvalueService->findWhere(['row_id' => $id_method], ['value']);
-        return $data_method;
+        foreach ($data_method as $item) {
+            array_push($arr_method, $item->value);
+        }
+        return $arr_method;
     }
 
     public function getIp()
     {
+        $arr_ip = [];
         $id_ip = $this->controller->findId("ip");
         $data_ip = $this->rowvalueService->findWhere(['row_id' => $id_ip], ['value']);
-        return $data_ip;
-    }
-
-    public function getValue(array $row_id)
-    {
-        try {
-            $value = [];
-            $hash = $this->getHash($row_id);
-            foreach ($hash as $item) {
-                $data = $this->rowvalueService->findWhere(['hash' => $item], ['value']);
-                foreach ($data as $item) {
-                    array_push($value, $item->value);
-                }
-            }
-            return $value;
-
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage());
+        foreach ($data_ip as $item) {
+            array_push($arr_ip, $item->value);
         }
+        return $arr_ip;
     }
-
-    public function getHash(array $row_id)
-    {
-        try {
-            $hash = [];
-            foreach ($row_id as $id) {
-                $data = $this->rowvalueService->findWhere(['row_id' => $id], ['value', 'hash']);
-                foreach ($data as $item) {
-                    array_push($hash, $item->hash);
-                }
-            }
-            $hash = array_unique($hash);
-            return $hash;
-
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage());
-        }
-    }
-
 
     public function getRowName($table_id)
     {
