@@ -5,6 +5,7 @@
  * Date: 23/05/2019
  * Time: 16:38
  */
+
 namespace App\Http\Controllers\Api;
 
 
@@ -76,6 +77,34 @@ class UserController extends ApiController
         }
     }
 
+    public function registerAPI(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $data_user = [
+                "email" => $request->email,
+                "password" => bcrypt($request->password),
+                "first_name" => $request->first_name,
+                "last_name" => $request->last_name,
+                "role" => 2,
+                'status' => \Constant::DB_FLG_STATUS_ON,
+                'created_at' => date('Y-m-d H:i:s'),
+
+            ];
+            $user = $this->userService->create($data_user);
+            $token = JWTAuth::fromUser($user);
+
+            DB::commit();
+            return $this->success($token);
+
+        } catch (ValidatorException $ex) {
+            return $this->error($ex->getMessageBag());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->error($e->getMessage());
+        }
+    }
+
 
     public function update(Request $request, $id)
     {
@@ -87,7 +116,7 @@ class UserController extends ApiController
                 "first_name" => $request->first_name ? $request->first_name : $data_user['first_name'],
                 "last_name" => $request->last_name ? $request->last_name : $data_user['last_name'],
             ];
-            
+
             $data_user = $this->userService->update($id, $data_update);
 
             return $this->success('Update success!');
@@ -130,6 +159,17 @@ class UserController extends ApiController
             return $this->error($e->getMessage());
         }
 
+    }
+
+    public function delete($id)
+    {
+        try {
+            $this->userService->delete($id);
+            return $this->success("delete success");
+
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage());
+        }
     }
 
 }

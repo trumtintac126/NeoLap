@@ -128,8 +128,6 @@ class RowvalueController extends ApiController
         }
     }
 
-
-
     /**
      * check table_id of user before list all row value
      * @param $table_id

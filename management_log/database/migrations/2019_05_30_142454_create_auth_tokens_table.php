@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableNamesTable extends Migration
+class CreateAuthTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreateTableNamesTable extends Migration
      */
     public function up()
     {
-        Schema::create('table_names', function (Blueprint $table) {
+        Schema::create('auth_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('table_name');
             $table->unsignedBigInteger('user_id');
+            $table->string('token');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
-            $table->softDeletes();
-//            $table->foreign('user_id')->references('id')->on('customer_users');
+            $table->dateTime('deleted_at');
         });
-        Schema::table('table_names', function ($table) {
+        Schema::table('auth_tokens', function ($table) {
             $table->foreign('user_id')->references('id')->on('customer_users');
         });
     }
@@ -34,6 +33,6 @@ class CreateTableNamesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_names');
+        Schema::dropIfExists('auth_tokens');
     }
 }

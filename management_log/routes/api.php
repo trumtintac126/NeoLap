@@ -22,6 +22,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
  *****************************************************/
 //register
 Route::post('/users','Api\UserController@register');
+//register user for API
+Route::post('/registerAPI','Api\UserController@registerAPI');
 //login
 Route::post('/login', 'Api\UserController@login');
 //group user
@@ -29,6 +31,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/users', 'Api\UserController@getAll');
     Route::put('/users/{id}','Api\UserController@update');
     Route::post('/logout', 'Api\UserController@logout');
+    Route::delete('/users/{id}', 'Api\UserController@delete');
 });
 /****************************************************
  ***************** Router: Table_name ****************
