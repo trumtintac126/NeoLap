@@ -14,6 +14,7 @@ use App\Repositories\Validators\Row_value\UpdateRowvalueValidator;
 use App\Services\RownameService;
 use App\Services\RowvalueService;
 
+use App\Services\TablenameService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -26,14 +27,14 @@ class RowvalueController extends ApiController
                                 UpdateRowvalueValidator $updateRowvalueValidator,
                                 RownameController $controller,
                                 RownameService $rownameService,
-                                TablenameController $tablenameController)
+                                TablenameService $tablenameService)
     {
         $this->rowvalueService = $rowvalueService;
         $this->createRowvalueValidator = $createRowvalueValidator;
         $this->updateRowvalueValidator = $updateRowvalueValidator;
         $this->rownameService = $rownameService;
         $this->controller = $controller;
-        $this->tablenameController = $tablenameController;
+        $this->tablenameService = $tablenameService;
     }
 
     public function create(Request $request)
@@ -43,10 +44,10 @@ class RowvalueController extends ApiController
             $data_user = auth()->user();
             $hash = (string)Uuid::generate();
 
-            $id_ip = $this->controller->findId("ip");
-            $id_method = $this->controller->findId("method");
-            $id_body = $this->controller->findId("body");
-            $id_header = $this->controller->findId("header");
+            $id_ip = $this->controller->findIdCreat("ip");
+            $id_method = $this->controller->findIdCreat("method");
+            $id_body = $this->controller->findIdCreat("body");
+            $id_header = $this->controller->findIdCreat("header");
 
             $hash = $request->hash;
             $ip = $request->ip;
@@ -97,13 +98,16 @@ class RowvalueController extends ApiController
         }
     }
 
-    public function all()
+    public function all(Request $request)
     {
         try {
-            $data_header = $this->getHeader();
-            $data_body = $this->getBody();
-            $data_method = $this->getMethod();
-            $data_ip = $this->getIp();
+            $table_id = $request->table_id;
+
+            $this->checkTableId($table_id);
+            $data_header = $this->getHeader($table_id);
+            $data_body = $this->getBody($table_id);
+            $data_method = $this->getMethod($table_id);
+            $data_ip = $this->getIp($table_id);
 
             $array_data = [];
 
@@ -125,10 +129,30 @@ class RowvalueController extends ApiController
         }
     }
 
-    public function getHeader()
+    public function checkTableId($table_id)
+    {
+        $data_user = auth()->user();
+        $table_id_check = $this->tablenameService->findWhere(
+            ['user_id' => $data_user->id],
+            ['id']
+        );
+        $arr_table_id = [];
+
+        foreach ($table_id_check as $item) {
+            array_push($arr_table_id, $item->id);
+        }
+
+        if (in_array($table_id, $arr_table_id)) {
+            return true;
+        } else {
+            return;
+        }
+    }
+
+    public function getHeader($table_id)
     {
         $arr_header = [];
-        $id_header = $this->controller->findId("header");
+        $id_header = $this->controller->findId("header", $table_id);
         $data_header = $this->rowvalueService->findWhere(['row_id' => $id_header], ['value']);
         foreach ($data_header as $item) {
             array_push($arr_header, $item->value);
@@ -136,10 +160,10 @@ class RowvalueController extends ApiController
         return $arr_header;
     }
 
-    public function getBody()
+    public function getBody($table_id)
     {
         $arr_body = [];
-        $id_body = $this->controller->findId("body");
+        $id_body = $this->controller->findId("body", $table_id);
         $data_body = $this->rowvalueService->findWhere(['row_id' => $id_body], ['value']);
         foreach ($data_body as $item) {
             array_push($arr_body, $item->value);
@@ -147,10 +171,10 @@ class RowvalueController extends ApiController
         return $arr_body;
     }
 
-    public function getMethod()
+    public function getMethod($table_id)
     {
         $arr_method = [];
-        $id_method = $this->controller->findId("method");
+        $id_method = $this->controller->findId("method", $table_id);
         $data_method = $this->rowvalueService->findWhere(['row_id' => $id_method], ['value']);
         foreach ($data_method as $item) {
             array_push($arr_method, $item->value);
@@ -158,27 +182,14 @@ class RowvalueController extends ApiController
         return $arr_method;
     }
 
-    public function getIp()
+    public function getIp($table_id)
     {
         $arr_ip = [];
-        $id_ip = $this->controller->findId("ip");
+        $id_ip = $this->controller->findId("ip", $table_id);
         $data_ip = $this->rowvalueService->findWhere(['row_id' => $id_ip], ['value']);
         foreach ($data_ip as $item) {
             array_push($arr_ip, $item->value);
         }
         return $arr_ip;
     }
-
-    public function getRowName($table_id)
-    {
-        try {
-            return $this->rownameService->findWhere(
-                ['table_name_id' => $table_id],
-                ['row_name', 'id']
-            );
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage());
-        }
-    }
-
 }

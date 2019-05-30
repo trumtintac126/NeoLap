@@ -162,10 +162,12 @@ class RownameController extends ApiController
         }
     }
 
-    public function findId($condition)
+    public function findId($condition, $table_id)
     {
         try {
-            $id = $this->rownameService->findWhere(['row_name' => $condition], ['id'])->first()->id;
+            $id = $this->rownameService->findWhere(['row_name' => $condition,
+                'table_name_id' => $table_id],
+                ['id'])->first()->id;
             return $id;
 
         } catch (\Exception $e) {
@@ -173,4 +175,15 @@ class RownameController extends ApiController
         }
     }
 
+    public function findIdCreat($condition)
+    {
+        try {
+            $id = $this->rownameService->findWhere(['row_name' => $condition],
+                ['id'])->first()->id;
+            return $id;
+
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage());
+        }
+    }
 }
