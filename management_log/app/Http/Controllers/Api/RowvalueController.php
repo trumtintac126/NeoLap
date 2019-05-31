@@ -25,7 +25,7 @@ class RowvalueController extends ApiController
     public function __construct(RowvalueService $rowvalueService,
                                 CreateRowvalueValidator $createRowvalueValidator,
                                 UpdateRowvalueValidator $updateRowvalueValidator,
-                                RownameController $controller,
+                                RownameController $rownameController,
                                 RownameService $rownameService,
                                 TablenameController $tablenameController)
     {
@@ -33,7 +33,7 @@ class RowvalueController extends ApiController
         $this->createRowvalueValidator = $createRowvalueValidator;
         $this->updateRowvalueValidator = $updateRowvalueValidator;
         $this->rownameService = $rownameService;
-        $this->controller = $controller;
+        $this->rownameController = $rownameController;
         $this->tablenameController = $tablenameController;
     }
 
@@ -48,10 +48,10 @@ class RowvalueController extends ApiController
             }
 
             $hash = (string)Uuid::generate();
-            $id_ip = $this->controller->findId("ip", $request->table_name_id);
-            $id_method = $this->controller->findId("method",$request->table_name_id);
-            $id_body = $this->controller->findId("body", $request->table_name_id);
-            $id_header = $this->controller->findId("header", $request->table_name_id);
+            $id_ip = $this->rownameController->findId("ip", $request->table_name_id);
+            $id_method = $this->rownameController->findId("method",$request->table_name_id);
+            $id_body = $this->rownameController->findId("body", $request->table_name_id);
+            $id_header = $this->rownameController->findId("header", $request->table_name_id);
 
             $hash = $request->hash;
             $ip = $request->ip;

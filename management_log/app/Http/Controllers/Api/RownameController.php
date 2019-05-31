@@ -38,7 +38,7 @@ class RownameController extends ApiController
         try {
             DB::beginTransaction();
             $table_id = $this->controller->checkTableId($request->table_name_id);
-            if(!$table_id) {
+            if (!$table_id) {
                 return $this->error("Access deny");
             }
             $row_name = $request->data_row_name;
@@ -184,7 +184,12 @@ class RownameController extends ApiController
         try {
             $id = $this->rownameService->findWhere(['row_name' => $condition,
                 'table_name_id' => $table_id],
-                ['id'])->first()->id;
+                ['id']);
+            $arr_id = [];
+            foreach ($id as $item) {
+                array_push($arr_id, $item->id);
+            }
+            dd($arr_id);
             return $id;
 
         } catch (\Exception $e) {
