@@ -179,6 +179,57 @@ class ApiAuthenTokenController extends ApiController
         }
     }
 
+    public function createRowValue(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $token = $request->token;
+            $table_id = $request->table_name_id;
+            $user_id = $this->getUserByToken($token)->user_id;
+            $table_id_check = $this->checkTableIdToken($table_id, $user_id);
+
+            if (!$table_id_check) {
+                return $this->error("Access deny");
+            }
+
+            $data_row_name = $request->row_name_table;
+
+            $id = $this->getTableIdFromRowName($data_row_name);
+
+            //check table_id request === table_id with row_name
+
+            if (!in_array($table_id, $id)) {
+                return $this->error("Error");
+            }
+
+            foreach ($data_row_name as $item) {
+                $find_id_table = $this->rownameController->findId($item, $table_id);
+                $data_insert = $this->rowvalueController->insertData($find_id_table, $request->$item, $request->hash);
+            }
+            DB::commit();
+            return $this->success("Create success");
+
+        } catch (ValidatorException $ex) {
+            return $this->error($ex->getMessageBag());
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+
+    public function getTableIdFromRowName($row_name_value)
+    {
+        $arr_table = [];
+        foreach ($row_name_value as $item) {
+            $table_id_with_rowname = $this->rownameService->findWhere(['row_name' => $item], ['*'])->first;
+            array_push($arr_table, $table_id_with_rowname->table_name_id);
+        }
+        $id = [];
+        foreach ($arr_table as $item) {
+            array_push($id, $item->table_name_id);
+        }
+        return array_unique($id);
+    }
 
     public
     function getUserByToken($token)
