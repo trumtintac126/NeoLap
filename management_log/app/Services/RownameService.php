@@ -25,4 +25,9 @@ class RownameService extends AbstractService
         $this->createValidator = $createRownameValidator;
         $this->updateValidator = $updateRownameValidator;
     }
+
+    public function getTableIdFromRowName($row_name_value)
+    {
+        return $this->repository->getTableIdFromRowName($row_name_value);
+    }
 }

@@ -138,46 +138,46 @@ class ApiAuthenTokenController extends ApiController
         }
     }
 
-    public function createRowValueRequestLog(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-            $token = $request->token;
-            $table_id = $request->table_name_id;
-            $user_id = $this->getUserByToken($token)->user_id;
-            $table_id_check = $this->checkTableIdToken($table_id, $user_id);
-
-            if (!$table_id_check) {
-                return $this->error("Access deny");
-            }
-
-            $hash = (string)Uuid::generate();
-            $id_ip = $this->rownameController->findId("ip", $table_id);
-            $id_method = $this->rownameController->findId("method", $table_id);
-            $id_body = $this->rownameController->findId("body", $table_id);
-            $id_header = $this->rownameController->findId("header", $table_id);
-
-            $hash = $request->hash;
-            $ip = $request->ip;
-            $method = $request->methods;
-            $body = $request->body;
-            $header = $request->header;
-
-            $data_insert_ip = $this->rowvalueController->insertData($id_ip, $ip, $hash);
-            $data_insert_method = $this->rowvalueController->insertData($id_method, $method, $hash);
-            $data_insert_body = $this->rowvalueController->insertData($id_body, $body, $hash);
-            $data_insert_header = $this->rowvalueController->insertData($id_header, $header, $hash);
-
-            DB::commit();
-            return $this->success("Create success");
-
-        } catch (ValidatorException $ex) {
-            return $this->error($ex->getMessageBag());
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return $this->error($e->getMessage());
-        }
-    }
+//    public function createRowValueRequestLog(Request $request)
+//    {
+//        try {
+//            DB::beginTransaction();
+//            $token = $request->token;
+//            $table_id = $request->table_name_id;
+//            $user_id = $this->getUserByToken($token)->user_id;
+//            $table_id_check = $this->checkTableIdToken($table_id, $user_id);
+//
+//            if (!$table_id_check) {
+//                return $this->error("Access deny");
+//            }
+//
+//            $hash = (string)Uuid::generate();
+//            $id_ip = $this->rownameController->findId("ip", $table_id);
+//            $id_method = $this->rownameController->findId("method", $table_id);
+//            $id_body = $this->rownameController->findId("body", $table_id);
+//            $id_header = $this->rownameController->findId("header", $table_id);
+//
+//            $hash = $request->hash;
+//            $ip = $request->ip;
+//            $method = $request->methods;
+//            $body = $request->body;
+//            $header = $request->header;
+//
+//            $data_insert_ip = $this->rowvalueController->insertData($id_ip, $ip, $hash);
+//            $data_insert_method = $this->rowvalueController->insertData($id_method, $method, $hash);
+//            $data_insert_body = $this->rowvalueController->insertData($id_body, $body, $hash);
+//            $data_insert_header = $this->rowvalueController->insertData($id_header, $header, $hash);
+//
+//            DB::commit();
+//            return $this->success("Create success");
+//
+//        } catch (ValidatorException $ex) {
+//            return $this->error($ex->getMessageBag());
+//        } catch (\Exception $e) {
+//            DB::rollBack();
+//            return $this->error($e->getMessage());
+//        }
+//    }
 
     public function createRowValue(Request $request)
     {

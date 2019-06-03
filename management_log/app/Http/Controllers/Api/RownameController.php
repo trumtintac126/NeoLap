@@ -185,11 +185,6 @@ class RownameController extends ApiController
             $id = $this->rownameService->findWhere(['row_name' => $condition,
                 'table_name_id' => $table_id],
                 ['id'])->first()->id;
-//            $arr_id = [];
-//            foreach ($id as $item) {
-//                array_push($arr_id, $item->id);
-//            }
-//            dd($arr_id);
             return $id;
 
         } catch (\Exception $e) {

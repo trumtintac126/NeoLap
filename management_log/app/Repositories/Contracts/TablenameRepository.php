@@ -13,5 +13,8 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 
 interface TablenameRepository extends RepositoryInterface
 {
-    
+    public function getTableId();
+
+    public function checkTableId($table_id);
+
 }

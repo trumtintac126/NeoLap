@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Repositories\Validators\Row_value\CreateRowvalueValidator;
 use App\Repositories\Validators\Row_value\UpdateRowvalueValidator;
+use App\Services\AuthTokenService;
 use App\Services\RownameService;
 use App\Services\RowvalueService;
 
@@ -25,45 +26,47 @@ class RowvalueController extends ApiController
     public function __construct(RowvalueService $rowvalueService,
                                 CreateRowvalueValidator $createRowvalueValidator,
                                 UpdateRowvalueValidator $updateRowvalueValidator,
-                                RownameController $rownameController,
                                 RownameService $rownameService,
-                                TablenameController $tablenameController)
+                                TablenameService $tablenameService,
+                                AuthTokenService $authTokenService
+    )
     {
         $this->rowvalueService = $rowvalueService;
         $this->createRowvalueValidator = $createRowvalueValidator;
         $this->updateRowvalueValidator = $updateRowvalueValidator;
         $this->rownameService = $rownameService;
-        $this->rownameController = $rownameController;
-        $this->tablenameController = $tablenameController;
+        $this->tablenameService = $tablenameService;
+        $this->authTokenService = $authTokenService;
     }
 
-    public function create(Request $request)
+    public
+    function create(Request $request)
     {
         try {
-            DB::beginTransaction();
-            $table_id = $this->tablenameController->checkTableId($request->table_name_id);
 
-            if(!$table_id) {
+            DB::beginTransaction();
+
+            $table_id = $request->table_name_id;
+
+            $table_id_check = $this->tablenameService->checkTableId($table_id);
+            if (!$table_id_check) {
                 return $this->error("Access deny");
             }
 
-            $hash = (string)Uuid::generate();
-            $id_ip = $this->rownameController->findId("ip", $request->table_name_id);
-            $id_method = $this->rownameController->findId("method",$request->table_name_id);
-            $id_body = $this->rownameController->findId("body", $request->table_name_id);
-            $id_header = $this->rownameController->findId("header", $request->table_name_id);
+            $data_row_name = $request->row_name_table;
 
-            $hash = $request->hash;
-            $ip = $request->ip;
-            $method = $request->methods;
-            $body = $request->body;
-            $header = $request->header;
+            $id = $this->rownameService->getTableIdFromRowName($data_row_name);
+            //check table_id request === table_id with row_name
+            if (!in_array($table_id, $id)) {
+                return $this->error("Error");
+            }
 
-            $data_insert_ip = $this->insertData($id_ip, $ip, $hash);
-            $data_insert_method = $this->insertData($id_method, $method, $hash);
-            $data_insert_body = $this->insertData($id_body, $body, $hash);
-            $data_insert_header = $this->insertData($id_header, $header, $hash);
-
+            foreach ($data_row_name as $item) {
+                $find_id_table = $this->rownameService->findWhere(['row_name' => $item,
+                    'table_name_id' => $table_id],
+                    ['id'])->first()->id;
+                $data_insert = $this->insertData($find_id_table, $request->$item, $request->hash);
+            }
             DB::commit();
             return $this->success("Create success");
 
@@ -75,7 +78,8 @@ class RowvalueController extends ApiController
         }
     }
 
-    public function insertData($row_id, $value, $hash)
+    public
+    function insertData($row_id, $value, $hash)
     {
         try {
             $data_insert = [
@@ -92,7 +96,8 @@ class RowvalueController extends ApiController
     }
 
 
-    public function delete($id)
+    public
+    function delete($id)
     {
         try {
             $data = $this->rowvalueService->delete($id);
@@ -102,14 +107,15 @@ class RowvalueController extends ApiController
         }
     }
 
-    public function all(Request $request)
+    public
+    function all(Request $request)
     {
         try {
             $table_id = $request->table_id;
 
             $table_id_check = $this->tablenameController->checkTableId($table_id);
 
-            if(!$table_id_check) {
+            if (!$table_id_check) {
                 return $this->error("Access deny");
             }
             $data_header = $this->getHeader($table_id);
@@ -137,7 +143,8 @@ class RowvalueController extends ApiController
         }
     }
 
-    public function getHeader($table_id)
+    public
+    function getHeader($table_id)
     {
         $arr_header = [];
         $id_header = $this->controller->findId("header", $table_id);
@@ -148,7 +155,8 @@ class RowvalueController extends ApiController
         return $arr_header;
     }
 
-    public function getBody($table_id)
+    public
+    function getBody($table_id)
     {
         $arr_body = [];
         $id_body = $this->controller->findId("body", $table_id);
@@ -159,7 +167,8 @@ class RowvalueController extends ApiController
         return $arr_body;
     }
 
-    public function getMethod($table_id)
+    public
+    function getMethod($table_id)
     {
         $arr_method = [];
         $id_method = $this->controller->findId("method", $table_id);
@@ -170,7 +179,8 @@ class RowvalueController extends ApiController
         return $arr_method;
     }
 
-    public function getIp($table_id)
+    public
+    function getIp($table_id)
     {
         $arr_ip = [];
         $id_ip = $this->controller->findId("ip", $table_id);

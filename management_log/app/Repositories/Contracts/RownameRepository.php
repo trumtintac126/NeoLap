@@ -13,5 +13,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 
 interface RownameRepository extends RepositoryInterface
 {
-    
+    public function getTableIdFromRowName($row_name_value);
 }

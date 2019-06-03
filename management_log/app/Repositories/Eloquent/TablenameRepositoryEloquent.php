@@ -34,5 +34,18 @@ class TablenameRepositoryEloquent extends BaseRepository implements TablenameRep
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
+    public function checkTableId($table_id){
+        return $this->checkTableId($table_id);
+    }
+
+    public function getTableId()
+    {
+        $data_user = auth()->user();
+        $table_id_check = $this->findWhere(
+            ['user_id' => $data_user->id],
+            ['id']
+        );
+        return $table_id_check;
+    }
 }
