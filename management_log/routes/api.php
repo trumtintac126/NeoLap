@@ -75,3 +75,9 @@ Route::post('/create_row_values', 'Api\ApiAuthenTokenController@createRowValue')
  *****************************************************/
 Route::put('/update_table/{table_id}', 'Api\ApiAuthenTokenUpdateController@updateTableName');
 Route::put('/update_row_name/{table_id}/{row_name_id}', 'Api\ApiAuthenTokenUpdateController@updateRowName');
+
+/****************************************************
+ ***************** Router: API list with token ****************
+ *****************************************************/
+Route::get('/list_tables', 'Api\ApiAuthenTokenListController@listTablName');
+Route::get('/list_row_names/{table_id}', 'Api\ApiAuthenTokenListController@listRowName');

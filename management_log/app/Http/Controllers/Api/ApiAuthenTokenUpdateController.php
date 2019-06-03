@@ -42,10 +42,7 @@ class ApiAuthenTokenUpdateController extends ApiController
             if (!$table_id_check) {
                 return $this->error("Access deny");
             }
-            //get table_name
-//            $data_table_name = $this->tablenameService->findWhere(['user_id' => $user_id,
-//                'status' => 1,
-//                'id' => $table_id], ['*']);
+
             $data_table_name = $this->findTableName($table_id, $user_id);
             //check table_name exits?
             $check_table_name = $this->tablenameService->findWhere(['table_name' => $table_name, 'user_id' => $user_id], ['*']);
