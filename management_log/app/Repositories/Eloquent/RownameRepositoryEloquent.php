@@ -34,17 +34,20 @@ class RownameRepositoryEloquent extends BaseRepository implements RownameReposit
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function getTableIdFromRowName($row_name_value)
+    public function getTableIdFromRowName($row_name_value, $table_id)
     {
         $arr_table = [];
         foreach ($row_name_value as $item) {
-            $table_id_with_rowname = $this->findWhere(['row_name' => $item], ['*'])->first;
+            $table_id_with_rowname = $this->findWhere(['row_name' => $item, 'table_name_id' => $table_id], ['*'])->first;
             array_push($arr_table, $table_id_with_rowname->table_name_id);
         }
+
         $id = [];
         foreach ($arr_table as $item) {
+            if($item == null) break;
             array_push($id, $item->table_name_id);
         }
+
         return array_unique($id);
     }
 }

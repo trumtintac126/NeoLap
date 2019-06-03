@@ -35,7 +35,21 @@ class TablenameRepositoryEloquent extends BaseRepository implements TablenameRep
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function checkTableId($table_id){
+    //get tableid
+    public function checkTableId($table_id)
+    {
+//        $table_id_check = $this->getTableId();
+//        $arr_table_id = [];
+//
+//        foreach ($table_id_check as $item) {
+//            array_push($arr_table_id, $item->id);
+//        }
+//
+//        if (in_array($table_id, $arr_table_id)) {
+//            return true;
+//        } else {
+//            return false;
+//        }
         return $this->checkTableId($table_id);
     }
 
@@ -47,5 +61,30 @@ class TablenameRepositoryEloquent extends BaseRepository implements TablenameRep
             ['id']
         );
         return $table_id_check;
+    }
+    //get tableid with token
+    public function getTableIdToken($user_id)
+    {
+        $table_id_check = $this->findWhere(
+            ['user_id' => $user_id],
+            ['id']
+        );
+        return $table_id_check;
+    }
+
+    public function checkTableIdToken($table_id, $user_id)
+    {
+//        $table_id_check = $this->getTableIdToken($user_id);
+//        $arr_table_id = [];
+//        foreach ($table_id_check as $item) {
+//            array_push($arr_table_id, $item->id);
+//        }
+//
+//        if (in_array($table_id, $arr_table_id)) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return $this>$this->checkTableIdToken($table_id, $user_id);
     }
 }

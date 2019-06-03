@@ -43,4 +43,19 @@ class TablenameService extends AbstractService
         }
     }
 
+    public function checkTableIdToken($table_id, $user_id)
+    {
+        $table_id_check = $this->repository->getTableIdToken($user_id);
+        $arr_table_id = [];
+        foreach ($table_id_check as $item) {
+            array_push($arr_table_id, $item->id);
+        }
+
+        if (in_array($table_id, $arr_table_id)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

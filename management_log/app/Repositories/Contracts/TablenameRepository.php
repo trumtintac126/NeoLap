@@ -17,4 +17,8 @@ interface TablenameRepository extends RepositoryInterface
 
     public function checkTableId($table_id);
 
+    public function getTableIdToken($user_id);
+
+    public function checkTableIdToken($table_id, $user_id);
+
 }

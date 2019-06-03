@@ -14,6 +14,7 @@ use App\Repositories\Validators\Row_name\UpdateRownameValidator;
 use App\Services\RownameService;
 
 use App\Services\RowvalueService;
+use App\Services\TablenameService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -23,21 +24,21 @@ class RownameController extends ApiController
     public function __construct(RownameService $rownameService,
                                 CreateRownameValidator $createRownameValidator,
                                 UpdateRownameValidator $updateRownameValidator,
-                                TablenameController $controller,
-                                RowvalueService $rowvalueService)
+                                RowvalueService $rowvalueService,
+                                TablenameService $tablenameService)
     {
         $this->rownameService = $rownameService;
         $this->createRownameValidator = $createRownameValidator;
         $this->updateRownameValidator = $updateRownameValidator;
-        $this->controller = $controller;
         $this->rowvalueService = $rowvalueService;
+        $this->tablenameService = $tablenameService;
     }
 
     public function create(Request $request)
     {
         try {
             DB::beginTransaction();
-            $table_id = $this->controller->checkTableId($request->table_name_id);
+            $table_id = $this->tablenameService->checkTableId($request->table_name_id);
             if (!$table_id) {
                 return $this->error("Access deny");
             }
@@ -108,6 +109,10 @@ class RownameController extends ApiController
             ],
                 ['*'])->first();
 
+            if ($data_row_name == null) {
+                return $this->error("Access deny");
+            }
+
             return $data_row_name;
 
         } catch (\Exception $e) {
@@ -136,9 +141,6 @@ class RownameController extends ApiController
 
             $data_row_name = $this->findWhere($table_name_id, $id);
 
-            if ($data_row_name == null) {
-                return $this->error("Access deny");
-            }
             if (!$this->checkBeforeDelete($id)) {
                 return $this->error("Relationshops with table row values");
             }
@@ -179,28 +181,4 @@ class RownameController extends ApiController
         }
     }
 
-    public function findId($condition, $table_id)
-    {
-        try {
-            $id = $this->rownameService->findWhere(['row_name' => $condition,
-                'table_name_id' => $table_id],
-                ['id'])->first()->id;
-            return $id;
-
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage());
-        }
-    }
-
-    public function findIdCreat($condition)
-    {
-        try {
-            $id = $this->rownameService->findWhere(['row_name' => $condition],
-                ['id'])->first()->id;
-            return $id;
-
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage());
-        }
-    }
 }

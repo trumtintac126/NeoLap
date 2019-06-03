@@ -55,7 +55,7 @@ class RowvalueController extends ApiController
 
             $data_row_name = $request->row_name_table;
 
-            $id = $this->rownameService->getTableIdFromRowName($data_row_name);
+            $id = $this->rownameService->getTableIdFromRowName($data_row_name, $table_id);
             //check table_id request === table_id with row_name
             if (!in_array($table_id, $id)) {
                 return $this->error("Error");

@@ -29,9 +29,7 @@ class ApiAuthenTokenController extends ApiController
                                 UpdateTablenameValidator $updateTablenameValidator,
                                 RownameService $rownameService,
                                 CreateRownameValidator $createRownameValidator,
-                                UpdateRownameValidator $updateRownameValidator,
-                                RownameController $rownameController,
-                                RowvalueController $rowvalueController)
+                                UpdateRownameValidator $updateRownameValidator)
     {
         $this->tokenService = $tokenService;
         $this->createAuthTokenValidator = $createAuthTokenValidator;
@@ -42,8 +40,6 @@ class ApiAuthenTokenController extends ApiController
         $this->rownameService = $rownameService;
         $this->createRownameValidator = $createRownameValidator;
         $this->updateRownameValidator = $updateRownameValidator;
-        $this->rownameController = $rownameController;
-        $this->rowvalueController = $rowvalueController;
     }
 
     public
@@ -67,7 +63,6 @@ class ApiAuthenTokenController extends ApiController
                 'created_at' => date('Y-m-d H:i:s'),
 
             ];
-
             $table_name = $this->tablenameService->create($data_table_name);
             DB::commit();
             $table = $this->tablenameService->all(['*'])->first();
@@ -105,15 +100,19 @@ class ApiAuthenTokenController extends ApiController
         try {
             DB::beginTransaction();
             $token = $request->token;
+
             $table_id = $request->table_name_id;
 
             $user_id = $this->getUserByToken($token)->user_id;
-            $table_id = $this->checkTableIdToken($table_id, $user_id);
+
+            $table_id = $this->tablenameService->checkTableIdToken($table_id, $user_id);
 
             if (!$table_id) {
                 return $this->error("Access deny");
             }
+
             $row_name = $request->data_row_name;
+
             if (isset($row_name)) {
                 foreach ($row_name as $row) {
                     $data_row_name = [
@@ -138,47 +137,6 @@ class ApiAuthenTokenController extends ApiController
         }
     }
 
-//    public function createRowValueRequestLog(Request $request)
-//    {
-//        try {
-//            DB::beginTransaction();
-//            $token = $request->token;
-//            $table_id = $request->table_name_id;
-//            $user_id = $this->getUserByToken($token)->user_id;
-//            $table_id_check = $this->checkTableIdToken($table_id, $user_id);
-//
-//            if (!$table_id_check) {
-//                return $this->error("Access deny");
-//            }
-//
-//            $hash = (string)Uuid::generate();
-//            $id_ip = $this->rownameController->findId("ip", $table_id);
-//            $id_method = $this->rownameController->findId("method", $table_id);
-//            $id_body = $this->rownameController->findId("body", $table_id);
-//            $id_header = $this->rownameController->findId("header", $table_id);
-//
-//            $hash = $request->hash;
-//            $ip = $request->ip;
-//            $method = $request->methods;
-//            $body = $request->body;
-//            $header = $request->header;
-//
-//            $data_insert_ip = $this->rowvalueController->insertData($id_ip, $ip, $hash);
-//            $data_insert_method = $this->rowvalueController->insertData($id_method, $method, $hash);
-//            $data_insert_body = $this->rowvalueController->insertData($id_body, $body, $hash);
-//            $data_insert_header = $this->rowvalueController->insertData($id_header, $header, $hash);
-//
-//            DB::commit();
-//            return $this->success("Create success");
-//
-//        } catch (ValidatorException $ex) {
-//            return $this->error($ex->getMessageBag());
-//        } catch (\Exception $e) {
-//            DB::rollBack();
-//            return $this->error($e->getMessage());
-//        }
-//    }
-
     public function createRowValue(Request $request)
     {
         try {
@@ -186,25 +144,27 @@ class ApiAuthenTokenController extends ApiController
             $token = $request->token;
             $table_id = $request->table_name_id;
             $user_id = $this->getUserByToken($token)->user_id;
-            $table_id_check = $this->checkTableIdToken($table_id, $user_id);
+            $table_id_check = $this->tablenameService->checkTableIdToken($table_id, $user_id);
 
             if (!$table_id_check) {
                 return $this->error("Access deny");
             }
 
-            $data_row_name = $request->row_name_table;
+            $data_row_name = $request->data_row_name;
 
-            $id = $this->getTableIdFromRowName($data_row_name);
+            $id = $this->rownameService->getTableIdFromRowName($data_row_name, $table_id);
 
-            //check table_id request === table_id with row_name
-
-            if (!in_array($table_id, $id)) {
+            if (count($id) == null) {
                 return $this->error("Error");
             }
 
             foreach ($data_row_name as $item) {
-                $find_id_table = $this->rownameController->findId($item, $table_id);
-                $data_insert = $this->rowvalueController->insertData($find_id_table, $request->$item, $request->hash);
+
+                $find_id_table = $this->rownameService->findWhere(
+                    ['row_name' => $item, 'table_name_id' => $table_id],
+                    ['id'])->first()->id;
+
+                $data_insert = $this->insertDataRowValue($find_id_table, $request->$item, $request->hash);
             }
             DB::commit();
             return $this->success("Create success");
@@ -216,23 +176,23 @@ class ApiAuthenTokenController extends ApiController
         }
     }
 
-
-    public function getTableIdFromRowName($row_name_value)
+    public function insertDataRowValue($row_id, $value, $hash)
     {
-        $arr_table = [];
-        foreach ($row_name_value as $item) {
-            $table_id_with_rowname = $this->rownameService->findWhere(['row_name' => $item], ['*'])->first;
-            array_push($arr_table, $table_id_with_rowname->table_name_id);
+        try {
+            $data_insert = [
+                'row_id' => $row_id,
+                'value' => $value,
+                'hash' => $hash,
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+            $data = $this->rowvalueService->create($data_insert);
+
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage());
         }
-        $id = [];
-        foreach ($arr_table as $item) {
-            array_push($id, $item->table_name_id);
-        }
-        return array_unique($id);
     }
 
-    public
-    function getUserByToken($token)
+    public function getUserByToken($token)
     {
         try {
             $user_id = $this->tokenService->findWhere(['token' => $token], ['user_id'])->first();
@@ -242,29 +202,4 @@ class ApiAuthenTokenController extends ApiController
         }
     }
 
-    public
-    function checkTableIdToken($table_id, $user_id)
-    {
-        $table_id_check = $this->getTableIdToken($user_id);
-        $arr_table_id = [];
-        foreach ($table_id_check as $item) {
-            array_push($arr_table_id, $item->id);
-        }
-
-        if (in_array($table_id, $arr_table_id)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public
-    function getTableIdToken($user_id)
-    {
-        $table_id_check = $this->tablenameService->findWhere(
-            ['user_id' => $user_id],
-            ['id']
-        );
-        return $table_id_check;
-    }
 }
