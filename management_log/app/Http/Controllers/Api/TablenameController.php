@@ -164,35 +164,5 @@ class TablenameController extends ApiController
         }
     }
 
-    /**
-     * check table_id of user before list all row value
-     * @param $table_id
-     * @return bool|void
-     */
-//    public function checkTableId($table_id)
-//    {
-//        $table_id_check = $this->getTableId();
-//        $arr_table_id = [];
-//
-//        foreach ($table_id_check as $item) {
-//            array_push($arr_table_id, $item->id);
-//        }
-//
-//        if (in_array($table_id, $arr_table_id)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-//
-//    public function getTableId()
-//    {
-//        $data_user = auth()->user();
-//        $table_id_check = $this->tablenameService->findWhere(
-//            ['user_id' => $data_user->id],
-//            ['id']
-//        );
-//        return $table_id_check;
-//    }
 
 }

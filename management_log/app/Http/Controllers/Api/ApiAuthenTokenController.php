@@ -12,6 +12,7 @@ use App\Repositories\Validators\Table_name\CreateTablenameValidator;
 use App\Repositories\Validators\Table_name\UpdateTablenameValidator;
 use App\Services\AuthTokenService;
 use App\Services\RownameService;
+use App\Services\RowvalueService;
 use App\Services\TablenameService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,25 +22,21 @@ use Webpatser\Uuid\Uuid;
 
 class ApiAuthenTokenController extends ApiController
 {
-    public function __construct(AuthTokenService $tokenService,
-                                CreateAuthTokenValidator $createAuthTokenValidator,
-                                UpdateAuthTokenValidator $updateAuthTokenValidator,
-                                TablenameService $tablenameService,
-                                CreateTablenameValidator $createTablenameValidator,
-                                UpdateTablenameValidator $updateTablenameValidator,
-                                RownameService $rownameService,
-                                CreateRownameValidator $createRownameValidator,
-                                UpdateRownameValidator $updateRownameValidator)
+    public function __construct(
+        AuthTokenService $tokenService,
+        CreateAuthTokenValidator $createAuthTokenValidator,
+        UpdateAuthTokenValidator $updateAuthTokenValidator,
+        TablenameService $tablenameService,
+        CreateTablenameValidator $createTablenameValidator,
+        RownameService $rownameService, RowvalueService $rowvalueService)
     {
         $this->tokenService = $tokenService;
         $this->createAuthTokenValidator = $createAuthTokenValidator;
         $this->updateAuthTokenValidator = $updateAuthTokenValidator;
         $this->tablenameService = $tablenameService;
         $this->createTablenameValidator = $createTablenameValidator;
-        $this->updateTablenameValidator = $updateTablenameValidator;
         $this->rownameService = $rownameService;
-        $this->createRownameValidator = $createRownameValidator;
-        $this->updateRownameValidator = $updateRownameValidator;
+        $this->rowvalueService = $rowvalueService;
     }
 
     public
@@ -48,8 +45,7 @@ class ApiAuthenTokenController extends ApiController
         try {
             DB::beginTransaction();
             $token = $request->token;
-            $user_id = $this->getUserByToken($token);
-
+            $user_id = $this->tokenService->getUserByToken($token);
             $check = $this->checkTableName($request->table_name, $user_id->user_id);
 
             if (!$check) {
@@ -103,7 +99,7 @@ class ApiAuthenTokenController extends ApiController
 
             $table_id = $request->table_name_id;
 
-            $user_id = $this->getUserByToken($token)->user_id;
+            $user_id = $this->tokenService->getUserByToken($token)->user_id;
 
             $table_id = $this->tablenameService->checkTableIdToken($table_id, $user_id);
 
@@ -143,7 +139,7 @@ class ApiAuthenTokenController extends ApiController
             DB::beginTransaction();
             $token = $request->token;
             $table_id = $request->table_name_id;
-            $user_id = $this->getUserByToken($token)->user_id;
+            $user_id = $this->tokenService->getUserByToken($token)->user_id;
             $table_id_check = $this->tablenameService->checkTableIdToken($table_id, $user_id);
 
             if (!$table_id_check) {
@@ -189,16 +185,6 @@ class ApiAuthenTokenController extends ApiController
 
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
-        }
-    }
-
-    public function getUserByToken($token)
-    {
-        try {
-            $user_id = $this->tokenService->findWhere(['token' => $token], ['user_id'])->first();
-            return $user_id;
-        } catch (\Exception $e) {
-            $this->error("Token Invalid");
         }
     }
 

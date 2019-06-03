@@ -8,5 +8,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 
 interface AuthTokenRepository extends RepositoryInterface
 {
-
+    public function getUserByToken($token);
 }

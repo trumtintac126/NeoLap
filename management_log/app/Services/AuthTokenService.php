@@ -18,4 +18,9 @@ class AuthTokenService extends AbstractService
         $this->createValidator = $createAuthTokenValidator;
         $this->updateValidator = $updateAuthTokenValidator;
     }
+
+    public function getUserByToken($token)
+    {
+        return $this->repository->getUserByToken($token);
+    }
 }

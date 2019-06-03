@@ -19,7 +19,7 @@ class AuthTokenRepositoryEloquent extends BaseRepository implements AuthTokenRep
      */
     public function model()
     {
-       return Auth_token::class;
+        return Auth_token::class;
     }
 
     /**
@@ -28,5 +28,11 @@ class AuthTokenRepositoryEloquent extends BaseRepository implements AuthTokenRep
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    public function getUserByToken($token)
+    {
+        $user_id = $this->findWhere(['token' => $token], ['user_id'])->first();
+        return $user_id;
     }
 }

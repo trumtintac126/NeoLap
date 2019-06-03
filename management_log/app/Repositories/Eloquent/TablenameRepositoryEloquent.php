@@ -38,18 +38,6 @@ class TablenameRepositoryEloquent extends BaseRepository implements TablenameRep
     //get tableid
     public function checkTableId($table_id)
     {
-//        $table_id_check = $this->getTableId();
-//        $arr_table_id = [];
-//
-//        foreach ($table_id_check as $item) {
-//            array_push($arr_table_id, $item->id);
-//        }
-//
-//        if (in_array($table_id, $arr_table_id)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
         return $this->checkTableId($table_id);
     }
 
@@ -74,17 +62,6 @@ class TablenameRepositoryEloquent extends BaseRepository implements TablenameRep
 
     public function checkTableIdToken($table_id, $user_id)
     {
-//        $table_id_check = $this->getTableIdToken($user_id);
-//        $arr_table_id = [];
-//        foreach ($table_id_check as $item) {
-//            array_push($arr_table_id, $item->id);
-//        }
-//
-//        if (in_array($table_id, $arr_table_id)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
         return $this>$this->checkTableIdToken($table_id, $user_id);
     }
 }
