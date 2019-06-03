@@ -74,3 +74,4 @@ Route::post('/create_row_values', 'Api\ApiAuthenTokenController@createRowValue')
  ***************** Router: API update with token ****************
  *****************************************************/
 Route::put('/update_table/{table_id}', 'Api\ApiAuthenTokenUpdateController@updateTableName');
+Route::put('/update_row_name/{table_id}/{row_name_id}', 'Api\ApiAuthenTokenUpdateController@updateRowName');
