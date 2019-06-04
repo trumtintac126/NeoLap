@@ -20,7 +20,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use Webpatser\Uuid\Uuid;
 
 
-class ApiAuthenTokenController extends ApiController
+class ApiAuthenTokenCreateController extends ApiController
 {
     public function __construct(
         AuthTokenService $tokenService,

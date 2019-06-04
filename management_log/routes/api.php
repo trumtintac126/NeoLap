@@ -66,9 +66,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
  ***************** Router: API create with token ****************
  *****************************************************/
 
-Route::post('/create_table', 'Api\ApiAuthenTokenController@createTable');
-Route::post('/create_row_names', 'Api\ApiAuthenTokenController@creatRowName');
-Route::post('/create_row_values', 'Api\ApiAuthenTokenController@createRowValue');
+Route::post('/create_table', 'Api\ApiAuthenTokenCreateController@createTable');
+Route::post('/create_row_names', 'Api\ApiAuthenTokenCreateController@creatRowName');
+Route::post('/create_row_values', 'Api\ApiAuthenTokenCreateController@createRowValue');
 
 /****************************************************
  ***************** Router: API update with token ****************
