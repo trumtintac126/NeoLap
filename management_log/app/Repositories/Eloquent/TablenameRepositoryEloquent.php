@@ -50,11 +50,13 @@ class TablenameRepositoryEloquent extends BaseRepository implements TablenameRep
         );
         return $table_id_check;
     }
+
     //get tableid with token
     public function getTableIdToken($user_id)
     {
         $table_id_check = $this->findWhere(
-            ['user_id' => $user_id],
+            ['user_id' => $user_id,
+                'status' => 1],
             ['id']
         );
         return $table_id_check;
@@ -62,6 +64,6 @@ class TablenameRepositoryEloquent extends BaseRepository implements TablenameRep
 
     public function checkTableIdToken($table_id, $user_id)
     {
-        return $this>$this->checkTableIdToken($table_id, $user_id);
+        return $this > $this->checkTableIdToken($table_id, $user_id);
     }
 }
