@@ -75,6 +75,7 @@ class ApiAuthenTokenListController extends ApiController
 
             $arr_rowname = [];
 
+
             $arr_rowname_id = [];
 
             foreach ($row_name_by_table_id as $item) {
@@ -85,28 +86,40 @@ class ApiAuthenTokenListController extends ApiController
                 array_push($arr_rowname_id, $item->id);
             }
 
-
             $arr_value = [];
-
             foreach ($arr_rowname_id as $item) {
                 $data_value = $this->rowvalueService->findWhere(['row_id' => $item], ['row_id', 'value']);
                 array_push($arr_value, $data_value);
 
             }
 
+            //get array data value
+            $arr_data_value = [];
             foreach ($arr_value as $item) {
-                print $item;
+                foreach ($item as $data) {
+                    array_push($arr_data_value, $item);
+                }
             }
-            exit;
-            dd(count($arr_value));
+
+            //sum row_name of table_id
             $sum_row_name = count($arr_rowname);
-            $sum_row_value = count($arr_value);
-            dd($sum_row_value);
-            dd(($sum_row_value / $sum_row_name));
-            for ($i = 1; $i <= ($sum_row_value / $sum_row_name); $i++) {
-                print "trumtintac";
+            //sum row_value of table_id
+            $sum_row_value = count($arr_data_value);
+
+            $count = $sum_row_value / $sum_row_name;
+
+            $arr_result = [];
+            for ($i = 0; $i < $count; $i++) {
+                $data = [];
+                foreach (range(0, $count-1) as $index) {
+                    $data["$arr_rowname[$index]"] = $arr_value[$index][$i]->value;
+                }
+                array_push($arr_result,$data);
             }
-            exit;
+
+            return $this->success($arr_result);
+
+
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
