@@ -87,3 +87,4 @@ Route::get('/list_row_values/{table_id}', 'Api\ApiAuthenTokenListController@list
  ***************** Router: API delete with token ****************
  *****************************************************/
 Route::delete('/delete_tables/{table_id}', 'Api\ApiAuthenTokenDeleteController@deleteTable');
+Route::delete('/delet_row_names/{table_name_id}/{row_name_id}', 'Api\ApiAuthenTokenDeleteController@deleteRowName');
