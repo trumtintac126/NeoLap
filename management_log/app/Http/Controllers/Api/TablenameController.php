@@ -141,7 +141,6 @@ class TablenameController extends ApiController
                 ['user_id' => $data_user->id],
                 ['*']
             );
-
             return $this->success($data);
 
         } catch (\Exception $e) {

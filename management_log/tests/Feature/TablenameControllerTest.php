@@ -1,23 +1,19 @@
 <?php
 
 namespace Tests\Feature;
-
-use App\Models\User;
-use Illuminate\Foundation\Testing\TestResponse;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use JWTAuth;
+
 
 class TablenameControllerTest extends TestCase
 {
     private static $id = null;
 
-//    public function checkTokenFromResponse(TestResponse $response)
-//    {
-//        $response->assertStatus(200);
-//    }
+    private static $token = [
+        'Authorization' => 'Bearer ' .
+            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC91c2VycyIsImlhdCI6MTU2MDIzN' .
+            'jQ3NCwiZXhwIjoxNTYwODQxMjc0LCJuYmYiOjE1NjAyMzY0NzQsImp0aSI6IlVTZnoyalhLM3gxdUE4YUsiLCJzdWIiOjM2LCJwcnYiOiIyM2JkNWM4O' .
+            'TQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.Mwwn9tAZ-yhbAc2IcPQ6AaglNEkv9pn8QAGJFeSIeYQ'
+    ];
 
     /**
      * A basic feature test example.
@@ -31,88 +27,78 @@ class TablenameControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function checkTokenRequest()
+    public function testShowSuccess()
     {
-
-        $response = $this->json('POST', '/api/login', ['email' => 'trumtintac@gmail.com', 'password' => '123456']);
-
-        self::$id = $response->original['status'];
-
-        $this->assertFalse(!self::$id, 'Email or password incorrect');
-
-        $user = $response->json();
-
+        $response = $this->json('Get', '/api/table_names', [], self::$token);
         $response->assertStatus(200);
-
-        return $user;
     }
 
-    public function it_allow_anyone_to_see_list_all_tablename()
+    public function testShowFailToken()
     {
-        $response = $this->get(route('table_names'));
-        $response->assertSuccessful();
-    }
-
-    public function testShow()
-    {
-        $response = $this->get('/api/table_names/' . self::$id);
+        $response = $this->json('Get', '/api/table_names', [], ['Authorization' => 'Bearer ' . '']);
         $response->assertStatus(401);
     }
 
-    public function checkNullCreateOrUpdate(TestResponse $response)
+    public function testStoreFailToken()
     {
-        if ($response->getStatusCode() == 400) {
-            $this->assertNotEmpty('', 'Table_name not null');
-            $response->assertStatus(400);
-        }
-        $response->assertStatus(200);
-    }
-
-    public function testStore()
-    {
-
-        $user = $this->checkTokenRequest();
-
-        $token = ['HTTP_Authorization' => 'Bearer ' . $user['data']];
-
         $response = $this->json('POST', '/api/table_names',
-            ['table_name' => "Default"], $token);
+            ['table_name' => "Default"], ['Authorization' => 'Bearer ' . '']);
 
-        $this->checkNullCreateOrUpdate($response);
+        $response->assertStatus(401);
+    }
 
-        self::$id = $response->original['status'][true];
+    public function testStoreFail()
+    {
+        $response = $this->json('POST', '/api/table_names',
+            ['table_name' => ""], self::$token);
+
+        $response->assertStatus(400);
+    }
+
+    public function testStoreSuccess()
+    {
+        $response = $this->json('POST', '/api/table_names',
+            ['table_name' => "Default"], self::$token);
 
         $response->assertStatus(200);
     }
 
-
-    public function testUpdate()
+    public function testUpdateFailToken()
     {
-        $user = $this->checkTokenRequest();
+        $response = $this->json('PUT', '/api/table_names/13',
+            ['table_name' => "Default"], ['Authorization' => 'Bearer ' . '']);
+        $response->assertStatus(401);
+    }
 
-        $token = ['Authorization' => 'Bearer ' . $user['data']];
+    public function testUpdateFailId()
+    {
+        $response = $this->json('PUT', '/api/table_names/1',
+            ['table_name' => "Request"], self::$token);
 
-        $response = $this->json('PUT', '/api/table_names/' . self::$id,
-            ['table_name' => "Request log"], $token);
+        $response->assertStatus(400);
+    }
 
-        $this->checkNullCreateOrUpdate($response);
+    public function testUpdateSuccess()
+    {
+        $response = $this->json('PUT', '/api/table_names/13',
+            ['table_name' => "Request log"], self::$token);
 
         $response->assertStatus(200);
     }
 
-    public function testDelete()
-    {
-        $user = $this->checkTokenRequest();
-
-        $token = ['Authorization' => 'Bearer ' . $user['data']];
-
-        $response = $this->json('delete', '/api/table_names/' . self::$id, [], $token);
-
-        if ($response->getStatusCode() == 400) {
-            $response->assertStatus(400);
-        } else {
-            $response->assertStatus(200);
-        }
-    }
+//    public function testDelete()
+//    {
+//        $user = $this->checkTokenRequest();
+//
+//        $token = ['Authorization' => 'Bearer ' . $user['data']];
+//
+//        $response = $this->json('delete', '/api/table_names/' . self::$id, [], $token);
+//
+//        if ($response->getStatusCode() == 400) {
+//            $response->assertStatus(400);
+//        } else {
+//            $response->assertStatus(200);
+//        }
+//    }
 
 }
