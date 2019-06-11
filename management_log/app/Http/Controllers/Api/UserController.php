@@ -14,6 +14,7 @@ use App\Repositories\Validators\Auth_token\UpdateAuthTokenValidator;
 use App\Repositories\Validators\User\CreateUserValidator;
 use App\Repositories\Validators\User\UpdateUserValidator;
 use App\Services\AuthTokenService;
+use App\Services\TablenameService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,8 @@ class UserController extends ApiController
                                 UpdateUserValidator $updateUserValidator,
                                 AuthTokenService $authTokenService,
                                 CreateAuthTokenValidator $createAuthTokenValidator,
-                                UpdateAuthTokenValidator $updateAuthTokenValidator
+                                UpdateAuthTokenValidator $updateAuthTokenValidator,
+                                TablenameService $tablenameService
     )
     {
         $this->userService = $userService;
@@ -38,6 +40,7 @@ class UserController extends ApiController
         $this->authTokenService = $authTokenService;
         $this->createAuthTokenValidator = $createAuthTokenValidator;
         $this->updateAuthTokenValidator = $updateAuthTokenValidator;
+        $this->tablenameService = $tablenameService;
     }
 
     /**
@@ -130,10 +133,13 @@ class UserController extends ApiController
         try {
 
             $data_user = auth()->user();
+            if ($data_user->id != $id) {
+                return $this->error("Access deny");
+            }
 
             $data_update = [
-                "first_name" => $request->first_name ? $request->first_name : $data_user['first_name'],
-                "last_name" => $request->last_name ? $request->last_name : $data_user['last_name'],
+                "first_name" => $request->first_name ?? $data_user['first_name'],
+                "last_name" => $request->last_name ?? $data_user['last_name'],
             ];
 
             $data_user = $this->userService->update($id, $data_update);
@@ -141,6 +147,7 @@ class UserController extends ApiController
             return $this->success('Update success!');
 
         } catch (ValidatorException $ex) {
+            dd($ex);
             return $this->error($ex->getMessageBag());
         } catch (\Exception $e) {
             dd($e);
@@ -150,6 +157,8 @@ class UserController extends ApiController
 
     public function logout(Request $request)
     {
+        $data_user = auth()->user();
+
         $this->validate($request, ['token' => 'required']);
 
         try {
@@ -183,6 +192,19 @@ class UserController extends ApiController
     public function delete($id)
     {
         try {
+
+            $data_user = auth()->user();
+
+            if ($data_user->id != $id) {
+                return $this->error("Access deny");
+            }
+
+            $table_id = $this->tablenameService->findWhere(['user_id' => $id], ['*']);
+
+            if (count($table_id) > 0) {
+                return $this->error("Exits table_name with " .$id);
+            }
+
             $this->userService->delete($id);
             return $this->success("delete success");
 
