@@ -111,20 +111,21 @@ class TablenameController extends ApiController
     public function delete($id)
     {
         try {
+//
+//            $data_table_name = $this->findWhere($id);
+//
+//            if ($data_table_name == null) {
+//                return $this->error("Access deny");
+//            }
+//
+//            $data_update = [
+//                'status' => 0,
+//                'deleted_at' => date('Y-m-d H:i:s'),
+//            ];
+//
+//            $table_name = $this->tablenameService->update($id, $data_update);
 
-            $data_table_name = $this->findWhere($id);
-
-            if ($data_table_name == null) {
-                return $this->error("Access deny");
-            }
-
-            $data_update = [
-                'status' => 0,
-                'deleted_at' => date('Y-m-d H:i:s'),
-            ];
-
-            $table_name = $this->tablenameService->update($id, $data_update);
-
+            $this->tablenameService->delete($id);
             return $this->success("Delete success");
 
         } catch (\Exception $e) {
